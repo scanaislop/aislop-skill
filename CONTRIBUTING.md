@@ -1,11 +1,14 @@
 # Contributing to aislop-skill
 
-Thanks for improving the skill. This repo ships a single agent skill — `SKILL.md` with supporting metadata (`skill.json`), three examples, and a README. Keep contributions tight and aligned with the skill's job: be the **code-quality gate and coding guardrail** for AI coding agents.
+Thanks for improving the repo. Each skill lives under `skills/<name>/` and ships its own `SKILL.md`, `skill.json`, and `examples/`. The top-level `README.md`, `LICENSE`, and this file cover the repo as a whole.
+
+The first (and currently only) skill is [`skills/aislop/`](skills/aislop/) — the **code-quality gate and coding guardrail** for AI coding agents.
 
 ## What belongs in this repo
 
-- Edits to `SKILL.md` that sharpen how the agent behaves on real user prompts.
-- New examples in `examples/` that show a realistic flow end-to-end.
+- Edits to an existing `skills/<name>/SKILL.md` that sharpen how the agent behaves on real user prompts.
+- New examples in `skills/<name>/examples/` that show a realistic flow end-to-end.
+- A brand-new skill under `skills/<new-name>/` — must ship `SKILL.md` (with YAML frontmatter: `name`, `description`), a `skill.json` manifest, and at least one example.
 - Fixes to `skill.json`, `README.md`, or `LICENSE`.
 - Typos, broken links, outdated command flags.
 
@@ -33,9 +36,10 @@ Thanks for improving the skill. This repo ships a single agent skill — `SKILL.
 
 ## Testing your change
 
+- **Install locally**: `npx skills add ./` (or `./skills/<name>`) from this repo and check the skill lands in your agent's skill directory.
 - **SKILL.md readability**: read it top to bottom. If any section reads as filler, delete it.
 - **Frontmatter `description`**: paste into a skill router (Claude Code, Cursor's rules search) and check it triggers on the prompts you expect — and doesn't trigger on unrelated ones.
-- **`skill.json`**: valid JSON, paths in `examples[]` exist, keywords and triggers reflect the body.
+- **`skill.json`**: valid JSON, paths in `examples[]` resolve relative to the `skill.json` itself, keywords and triggers reflect the body.
 - **Examples**: the shown commands must match what `npx aislop --help` reports today.
 
 ## Publishing new versions
