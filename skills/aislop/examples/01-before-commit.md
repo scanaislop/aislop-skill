@@ -2,6 +2,8 @@
 
 An agent implements a small feature, then runs aislop before handing control back.
 
+Commands below use the normal `npx aislop` quick-start path. In repos with strict supply-chain policy, use the project's pinned local script or binary instead.
+
 ---
 
 **User:**

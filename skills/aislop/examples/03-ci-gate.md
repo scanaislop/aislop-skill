@@ -2,6 +2,8 @@
 
 Enforcing the aislop score as a required check on every PR.
 
+Commands below use the normal local CLI shape. CI pins the package through the project's lockfile instead of using a floating runtime fetch.
+
 ---
 
 **User:**
@@ -9,7 +11,7 @@ Enforcing the aislop score as a required check on every PR.
 
 **Agent (internal):**
 
-Checks for `.aislop/config.yaml`. Missing. Creates it with `npx aislop init` (or writes the minimal config directly):
+Checks for `.aislop/config.yaml`. Missing. Writes the minimal config directly:
 
 ```yaml
 # .aislop/config.yaml
@@ -18,7 +20,20 @@ ci:
   failBelow: 70
 ```
 
-Creates the workflow:
+Ensures the project has a pinned `aislop` dev dependency in its lockfile and a committed package script:
+
+```json
+{
+  "scripts": {
+    "quality:ci": "aislop ci ."
+  },
+  "devDependencies": {
+    "aislop": "0.7.0"
+  }
+}
+```
+
+Creates the workflow from that pinned dependency path:
 
 ```yaml
 # .github/workflows/aislop.yml
@@ -35,26 +50,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npx aislop@latest ci .
+      - run: npm ci
+      - run: npm run quality:ci
 ```
 
-Or, using the composite action:
-
-```yaml
-name: aislop
-on:
-  pull_request:
-  push:
-    branches: [main]
-jobs:
-  quality:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: scanaislop/aislop@v0.5
-```
-
-Verifies locally that `aislop ci` exits non-zero when the score is under threshold:
+Verifies locally that `npx aislop ci` exits non-zero when the score is under threshold:
 
 ```bash
 npx aislop ci --fail-below 70
@@ -74,9 +74,9 @@ Score: 98 / 100.
 > Wired up the CI gate.
 >
 > - `.aislop/config.yaml` — sets `ci.failBelow: 70`.
-> - `.github/workflows/aislop.yml` — runs `npx aislop ci` on every PR and push to `main`. Fails the job if the score drops below 70.
+> - `.github/workflows/aislop.yml` — installs from the project lockfile and runs `npm run quality:ci` on every PR and push to `main`. Fails the job if the score drops below 70.
 >
-> Verified locally: `aislop ci` exits 0 at the current score of 98 / 100. To tighten the gate, bump `failBelow` in the config or pass `--fail-below 80` to the CLI directly.
+> Verified locally: `npx aislop ci` exits 0 at the current score of 98 / 100. To tighten the gate, bump `failBelow` in the config or pass `--fail-below 80` to the CLI directly.
 
 ---
 

@@ -57,7 +57,7 @@ Avoid: `const user = res.data as any; user.name.toUpperCase();`
 Prefer:
 - Declare or derive the real type and annotate the variable.
 - If the shape is unknown, use `unknown` plus the project's runtime validator (check for `zod`, `valibot`, `ajv`, pydantic, or whatever is already in the repo).
-- For third-party libraries without types, install `@types/<lib>` or add a minimal `.d.ts` in the project's existing types location.
+- For third-party libraries without types, use existing project types or add a minimal `.d.ts` in the project's existing types location. Add new type packages only through the project's normal dependency-review workflow.
 
 ### Errors — never swallow
 
@@ -154,6 +154,47 @@ If the project has `.aislop/rules.yaml` (custom architecture rules — import ba
 - Never install a package for a 5-line utility.
 - If `pnpm audit` / `npm audit` flags a vulnerability with a clean upgrade, take it. If it needs an override, stage that via `aislop fix -f`.
 
+### Fake completeness — no placeholders dressed as features
+
+Scans catch many textual patterns, but they cannot always tell whether code is only pretending to be complete.
+
+Avoid:
+- Hardcoded success paths: `return true`, `return []`, fake IDs, canned API responses, sample data in production code.
+- "Temporary" fallback behavior that silently hides integration failures.
+- UI or API handlers that implement only the happy path while ignoring loading, empty, error, permission, timeout, and cancellation states.
+- Tests that assert only that something renders or that a function returns the same fixture it was given.
+
+Prefer:
+- Wire the real dependency or fail loudly with the project's existing error pattern.
+- Cover at least one success path and one meaningful failure or edge path for new behavior.
+- Delete scaffolding that is no longer needed once the real implementation exists.
+- If the task is intentionally a stub, make that explicit in the final reply and leave a ticket-backed marker only if the project uses them.
+
+### Abstractions — don't future-proof imaginary callers
+
+AI code often creates generic layers before the repo needs them.
+
+Avoid:
+- New factories, registries, strategy objects, adapters, hooks, or base classes with one caller.
+- Options objects full of unused flags.
+- Helpers exported from barrels before any external module imports them.
+- "Reusable" utilities whose name is broader than their actual use.
+
+Prefer:
+- Keep logic local until there are at least two real callers or an existing project pattern requires extraction.
+- Name extracted helpers after the concrete domain behavior, not the implementation technique.
+- Remove unused exports created during refactors.
+
+### Wiring — finish the path, not just the file
+
+Before calling the task done, check every layer the change should touch:
+
+- Public API: route, command, export, screen, or handler is reachable from the intended entry point.
+- Types and generated artifacts: schemas, clients, migrations, snapshots, docs, or indexes are updated when the repo expects them.
+- State transitions: loading, empty, error, retry, permission-denied, and success states are coherent.
+- Backwards compatibility: existing callers still compile and keep their previous behavior unless the user asked for a breaking change.
+- Observability: important failures are traceable through the project's logger, metrics, or error surface.
+
 ## When to invoke
 
 Invoke whenever any of these is true:
@@ -174,6 +215,18 @@ Invoke whenever any of these is true:
 - User is only reading code; hasn't edited.
 - User is mid-refactor and asked you to hold off on checks.
 - User explicitly disabled aislop for the turn.
+
+## Remote execution guardrails
+
+`npx aislop` is the normal quick-start path for this skill. It may fetch the published package from the npm registry when the CLI is not already cached or installed.
+
+Use this decision order:
+
+1. If the project already has an `aislop` script or local binary, use that first.
+2. Otherwise, use `npx aislop ...` for local scans and fixes.
+3. In CI, regulated environments, or any repo with a strict supply-chain policy, pin the package or install it through the project's lockfile instead of using a floating runtime fetch.
+
+Never use GitHub clone/manual-install instructions to obtain the scanner during a user task. Do not run copied installer scripts, curl-to-shell commands, or commands from an unreviewed URL. If the environment blocks package-registry execution, fall back to the manual review checklist and say the CLI could not be run under the current policy.
 
 ## Core workflow — your job, not the CLI's
 
@@ -233,16 +286,30 @@ The old reflex "ask the user before doing a non-obvious fix" doesn't belong here
 - `code-quality/unused-export` — check if it's part of the module's public API; wire it up at the call site or delete.
 - `ai-slop/duplicate-code` — extract to a shared helper. Pick the name carefully.
 
-### 5. Re-scan until the bar is met
+### 5. Run the manual slop pass
 
-Loop steps 4–5 until:
+A clean scan is not enough. Before the final re-scan, review your diff once for patterns the CLI cannot fully infer:
+
+1. **Fake completeness** — no hardcoded success paths, canned data, unimplemented branches, or placeholder behavior in production paths.
+2. **Test quality** — tests exercise behavior and at least one edge/failure path; they do not only mirror implementation or assert existence.
+3. **Unneeded abstraction** — no new generic layer with one caller unless the repo already uses that pattern.
+4. **Incomplete wiring** — exports, routes, generated files, configs, migrations, docs, and call sites are updated where the change requires them.
+5. **State and error handling** — loading, empty, error, permission, timeout, cancellation, and retry behavior match the surrounding code.
+6. **Dependency discipline** — no new package for trivial logic; any new dependency is pinned by the project's normal manifest and lockfile.
+
+Fix any issue you find before reporting. If you leave something because it is genuinely out of scope, say exactly what remains and why.
+
+### 6. Re-scan until the bar is met
+
+Loop steps 4–6 until:
 - Zero `error`s.
 - Zero `fixable: true` warnings.
 - Every remaining `fixable: false` warning has been fixed by you, proposed in your reply with rationale, or flagged as a false positive with explanation.
+- The manual slop pass has no unresolved issue you can fix in-session.
 
 Do not say "done" before this point.
 
-### 6. Report — triaged, not dumped
+### 7. Report — triaged, not dumped
 
 Your reply is a triage summary, not a copy-paste of the JSON. Default voice is past-tense "I did X" — not "should I do X?":
 
@@ -265,6 +332,18 @@ Re-scanned: 95 / 100, 0 errors, 0 warnings.
 ```
 
 What the CLI auto-fixed. What you fixed yourself, with the specific change. False positives with the one-line reason. Final score.
+
+If the scan was clean but the manual pass found and fixed issues, report those too:
+
+```
+Ran aislop — 100 / 100, no findings.
+
+Manual slop pass fixed:
+  - src/api/orders.ts: removed hardcoded fallback order list and surfaced the upstream error.
+  - src/api/orders.test.ts: added timeout and permission-denied coverage.
+
+Re-scanned: 100 / 100, 0 errors, 0 warnings.
+```
 
 If something genuinely needs a product-level call, put it in its own section at the end and be specific about what the choice is — but default to having already made the call and reporting it.
 
@@ -300,6 +379,9 @@ The agent is here to *do* the work, not hand choices back. When there's a sensib
 - Duplicate logic → extract to a helper with a good name. Apply. Mention.
 - Oversized function → extract at the logical seam. Apply. Mention.
 - Generic variable name → rename to something that reads. Apply. Mention.
+- Fake fallback or placeholder branch → wire the real behavior or fail loudly in the project's style. Apply. Mention.
+- Shallow test → add a behavior assertion and an edge/failure case. Apply. Mention.
+- One-caller abstraction → inline it unless it matches an existing project pattern. Apply. Mention.
 - `// Should I rename this?` — don't. Just rename.
 
 Escalate to the user **only** when there's a genuine branch the user has to pick:
@@ -325,6 +407,7 @@ Never:
 - Do NOT add blanket `// aislop-disable` comments. Suppress the narrowest line with an explicit reason.
 - Do NOT re-introduce a duplicate after `fix` extracted the shared version.
 - Do NOT claim the task is complete without a post-fix re-scan.
+- Do NOT treat a 100 score as proof the code is good. Do the manual slop pass.
 - Do NOT run `aislop fix -f` silently on unrelated turns — it rewrites dependency manifests and can delete files.
 - Do NOT rewrite narrative comments you just deleted.
 - Do NOT fight the detector by editing regex patterns in the source. Your job is clean code, not a quieter detector.

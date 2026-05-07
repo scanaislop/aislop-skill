@@ -2,6 +2,8 @@
 
 `aislop fix` cleans up 8 of 12 findings. The agent addresses the remaining 4 by hand.
 
+Commands below use the normal `npx aislop` quick-start path. In repos with strict supply-chain policy, use the project's pinned local script or binary instead.
+
 ---
 
 **User:**

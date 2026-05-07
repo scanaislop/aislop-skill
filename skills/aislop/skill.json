@@ -1,6 +1,6 @@
 {
   "name": "aislop",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Code-quality gate and coding guardrail for AI coding agents. Use when the user finishes a feature, prepares to commit / push / open a PR, or asks a quality question — \"any slop\", \"any duplicates\", \"is this reusable\", \"is this maintainable\", \"is this safe\", \"review my changes\", \"score my code\". Scans with aislop, fixes what is mechanical, addresses the rest in-session in the project's style, reports what changed.",
   "homepage": "https://scanaislop.com",
   "repository": "https://github.com/scanaislop/aislop-skill",
@@ -19,6 +19,10 @@
     "code-review",
     "ai-slop",
     "ai-slop-detection",
+    "semantic-review",
+    "manual-review",
+    "test-quality",
+    "placeholder-code",
     "ai-agents",
     "skills-sh",
     "anthropic",
@@ -82,7 +86,8 @@
   "examples": [
     "examples/01-before-commit.md",
     "examples/02-remaining-findings.md",
-    "examples/03-ci-gate.md"
+    "examples/03-ci-gate.md",
+    "examples/04-green-scan-manual-pass.md"
   ],
   "triggers": [
     "is this ready to ship",
@@ -103,6 +108,10 @@
     "does this follow our architecture rules",
     "score my code",
     "review my changes",
+    "green scan but still sloppy",
+    "catch placeholder code",
+    "find shallow tests",
+    "semantic slop review",
     "anything to clean up"
   ]
 }
