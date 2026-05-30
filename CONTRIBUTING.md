@@ -1,4 +1,4 @@
-# Contributing to aislop-skill
+# Contributing to scanaislop skills
 
 Thanks for improving the repo. Each skill lives under `skills/<name>/` and ships its own `SKILL.md`, `skill.json`, and `examples/`. The top-level `README.md`, `LICENSE`, and this file cover the repo as a whole.
 
