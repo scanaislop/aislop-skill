@@ -11,10 +11,10 @@ Commands below use the normal local CLI shape. CI pins the package through the p
 
 **Agent (internal):**
 
-Checks for `.aislop/config.yaml`. Missing. Writes the minimal config directly:
+Checks for `.aislop/config.yml`. Missing. Writes the minimal config directly:
 
 ```yaml
-# .aislop/config.yaml
+# .aislop/config.yml
 version: 1
 ci:
   failBelow: 70
@@ -28,7 +28,7 @@ Ensures the project has a pinned `aislop` dev dependency in its lockfile and a c
     "quality:ci": "aislop ci ."
   },
   "devDependencies": {
-    "aislop": "0.7.0"
+    "aislop": "0.10.1"
   }
 }
 ```
@@ -54,10 +54,10 @@ jobs:
       - run: npm run quality:ci
 ```
 
-Verifies locally that `npx aislop ci` exits non-zero when the score is under threshold:
+Verifies locally that `aislop ci` exits non-zero when the score is under the configured threshold:
 
 ```bash
-npx aislop ci --fail-below 70
+npx aislop ci
 echo $?
 ```
 
@@ -73,16 +73,16 @@ Score: 98 / 100.
 
 > Wired up the CI gate.
 >
-> - `.aislop/config.yaml` — sets `ci.failBelow: 70`.
+> - `.aislop/config.yml` — sets `ci.failBelow: 70`.
 > - `.github/workflows/aislop.yml` — installs from the project lockfile and runs `npm run quality:ci` on every PR and push to `main`. Fails the job if the score drops below 70.
 >
-> Verified locally: `npx aislop ci` exits 0 at the current score of 98 / 100. To tighten the gate, bump `failBelow` in the config or pass `--fail-below 80` to the CLI directly.
+> Verified locally: `npx aislop ci` exits 0 at the current score of 98 / 100. To tighten the gate, bump `failBelow` in `.aislop/config.yml`.
 
 ---
 
 Notes:
 
 - The gate threshold lives in config, not hardcoded in the workflow, so teams can tune it without editing YAML in `.github/`.
-- The `--fail-below` CLI flag lets you override per-environment (e.g. stricter on `main`, looser on preview branches).
+- `aislop ci` exits non-zero when the score is below `ci.failBelow` or any error-severity finding is present, which is what fails the job.
 - `aislop ci` emits JSON to stdout — pipe it to an artifact if you want historical tracking.
 - Keep the gate low at first, raise it once the project baselines. Starting strict is how teams learn to silence rules.

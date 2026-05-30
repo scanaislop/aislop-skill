@@ -22,7 +22,7 @@ Twelve findings:
 - 3 × `ai-slop/narrative-comment` (fixable)
 - 2 × `ai-slop/unused-import` (fixable)
 - 3 × `ai-slop/trivial-comment` (fixable)
-- 2 × `ai-slop/as-any-cast` in `src/billing/normalize.ts` (not fixable)
+- 2 × `ai-slop/unsafe-type-assertion` in `src/billing/normalize.ts` (not fixable)
 - 1 × `complexity/function-too-long` in `src/billing/reconcile.ts:14` (`reconcile`, 134 lines) (not fixable)
 - 1 × `security/sql-injection` in `src/billing/search.ts:30` (not fixable)
 

@@ -2,6 +2,8 @@
 
 Agent skills for the [aislop](https://github.com/scanaislop/aislop) code-quality CLI, installable across every agent in the [skills.sh](https://skills.sh) ecosystem.
 
+[![skills.sh](https://skills.sh/b/scanaislop/aislop-skill)](https://skills.sh/scanaislop/aislop-skill)
+
 ## Install
 
 ```bash

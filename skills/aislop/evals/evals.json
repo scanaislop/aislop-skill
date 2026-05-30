@@ -1,0 +1,35 @@
+{
+  "description": "aislop skill trigger evaluation set",
+  "evals": [
+    {
+      "id": "trigger-accuracy",
+      "description": "Tests whether the skill triggers correctly on quality-related queries and does not trigger on adjacent but unrelated queries",
+      "prompts": {
+        "should_trigger": [
+          "ok i just finished this billing refactor, can you check it before i commit?",
+          "any slop in this PR? i feel like i left some lazy comments",
+          "weve got a CI fail saying score dropped below 70, fix whatever it finds",
+          "review my changes for security issues, i think i might have a sql injection",
+          "can you dedupe this? i keep writing the same fetch logic everywhere",
+          "is this function too long? feels like it does too many things",
+          "add a score badge to the readme and tell me our trend",
+          "i just merged three branches and need the whole project cleaned up before i open the PR",
+          "run aislop doctor, my env isnt finding the tools it needs",
+          "the linter passes but theres still something wrong — green scan but sloppy"
+        ],
+        "should_not_trigger": [
+          "run the linter for me",
+          "can you format this file with prettier",
+          "is this auth system design secure?",
+          "whats our test coverage percentage",
+          "read the code in src/ and tell me whats wrong",
+          "optimize this database query for me",
+          "set up eslint for this project",
+          "migrate from javascript to typescript",
+          "can you explain what this function does",
+          "deploy this to staging"
+        ]
+      }
+    }
+  ]
+}
