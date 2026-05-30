@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "description": "Code-quality gate and coding guardrail for AI coding agents. Always invoke this skill when you finish editing and prepare to hand control back — even if the user didn't explicitly ask. Trigger on commit, push, PR, or any quality question: \"any slop\", \"is this clean\", \"review my changes\", \"score my code\", \"any duplicates\", \"is this safe\". Scans with aislop, fixes what is mechanical, addresses the rest in-session in the project's style, reports what changed.",
   "homepage": "https://scanaislop.com",
-  "repository": "https://github.com/scanaislop/aislop-skill",
+  "repository": "https://github.com/scanaislop/skills",
   "license": "MIT",
   "author": {
     "name": "scanaislop",

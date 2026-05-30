@@ -1,13 +1,13 @@
-# aislop-skill
+# scanaislop skills
 
 Agent skills for the [aislop](https://github.com/scanaislop/aislop) code-quality CLI, installable across every agent in the [skills.sh](https://skills.sh) ecosystem.
 
-[![skills.sh](https://skills.sh/b/scanaislop/aislop-skill)](https://skills.sh/scanaislop/aislop-skill)
+[![skills.sh](https://skills.sh/b/scanaislop/skills)](https://skills.sh/scanaislop/skills)
 
 ## Install
 
 ```bash
-npx skills add scanaislop/aislop-skill
+npx skills add scanaislop/skills
 ```
 
 Flags: `-s <skill>` to pick one skill, `-a <agent>` for a specific agent, `-g` for user-scope, `--list` to preview. See `npx skills add --help`.
