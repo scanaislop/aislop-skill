@@ -49,7 +49,7 @@ This skill tells you which anti-patterns to avoid. It does NOT tell you the one 
 - **Types / validation** — match the project's choice (`zod`, `valibot`, `ajv`, pydantic, Go structs, etc.).
 - **Naming** — follow the project's casing, file naming, and folder layout.
 - **Tests** — use the framework and patterns already in the repo.
-- **Architecture** — if `.aislop/rules.yaml` exists, it's authoritative. Otherwise, match import patterns and module boundaries from existing files.
+- **Architecture** — if `.aislop/rules.yml` exists, it's authoritative. Otherwise, match import patterns and module boundaries from existing files.
 
 The avoid/prefer examples in the prevention catalog are illustrative. A fix in the project's style beats a fix in this skill's style.
 
@@ -72,12 +72,12 @@ Skip when: user is only reading, is mid-refactor and asked you to hold off, or e
 | `aislop scan [dir]` | Full scan. Flags: `--changes`, `--staged`, `--json`, `--sarif` |
 | `aislop fix [dir]` | Auto-fix mechanical issues. `-f` for aggressive. `--claude`/`--codex`/`--cursor`/`--gemini` for agent hand-off. `-p` to print prompt. |
 | `aislop ci [dir]` | CI mode: JSON output + exit code by threshold |
-| `aislop init [dir]` | Generate `.aislop/config.yaml` |
+| `aislop init [dir]` | Generate `.aislop/config.yml` |
 | `aislop doctor [dir]` | Check installed tools and environment |
 | `aislop rules [dir]` | List all rules with severity and fixability |
 | `aislop trend [dir]` | Show score history from `.aislop/history.jsonl` |
 | `aislop badge [dir]` | Generate a public score badge URL + README markdown |
-| `aislop hook install` | Install per-edit quality hooks for Claude Code, Cursor, Gemini |
+| `aislop hook install` | Install per-edit quality hooks. Supports Claude Code, Cursor, Codex, Gemini, pi, and others (run `aislop hook install --help` for the full list). |
 
 ## Core workflow
 
@@ -212,7 +212,7 @@ Never ask permission for fixes you can make yourself. Pick the right tool and ap
 - Do NOT ask for permission on fixes you can make yourself.
 - Do NOT paste raw JSON into your reply — triage and summarise.
 - Do NOT silence rules in config or add blanket suppression comments.
-- Do NOT delete `.aislop/config.yaml` or `.aislop/rules.yaml`.
+- Do NOT delete `.aislop/config.yml` or `.aislop/rules.yml`.
 - Do NOT claim completion without a post-fix re-scan.
 - Do NOT treat a 100 score as proof the code is good — do the manual pass.
 - Do NOT run `aislop fix -f` silently on unrelated turns — it rewrites manifests.

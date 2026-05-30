@@ -66,7 +66,7 @@ Prefer: Accept as a parameter, read from config, or derive from context.
 
 ## Duplication — search before you write
 
-`ai-slop/duplicate-code` — `code-quality/unused-export`
+`code-quality/duplicate-block` — `knip/exports`
 
 - Before writing a new helper, grep the codebase for the operation.
 - If two blocks do the same thing with tiny variations, extract once and parameterise the variation.
@@ -74,7 +74,7 @@ Prefer: Accept as a parameter, read from config, or derive from context.
 
 ## Dead code — don't leave it
 
-`ai-slop/unused-import` — `ai-slop/unused-variable` — `ai-slop/unused-declaration` — `ai-slop/unreachable-code` — `ai-slop/constant-condition` — `ai-slop/hallucinated-import` — `ai-slop/duplicate-import`
+`ai-slop/unused-import` — `code-quality/unused-declaration` — `ai-slop/unreachable-code` — `ai-slop/constant-condition` — `ai-slop/hallucinated-import` — `ai-slop/duplicate-import`
 
 - Remove imports as you remove the code that used them — not later.
 - If you wrote a function and ended up not using it, delete it. Don't "leave it in case".
@@ -124,7 +124,7 @@ The name should tell the reader what's in it, not the type or how it was derived
 
 ## Function and file size — split at the logical seam
 
-`complexity/function-too-long` (default max 80 LOC) — `complexity/file-too-large` (default max 400 LOC; JSX/TSX 2x) — `complexity/deep-nesting` — `complexity/too-many-params` — `complexity/high-complexity`
+`complexity/function-too-long` (default max 80 LOC) — `complexity/file-too-large` (default max 400 LOC; JSX/TSX 2x) — `complexity/deep-nesting` — `complexity/too-many-params`
 
 - Write short functions from the start. If you're over 40 lines, there's usually a seam.
 - Extract the seam — a group of statements that does one sub-task and could be named.
@@ -132,13 +132,13 @@ The name should tell the reader what's in it, not the type or how it was derived
 - If you need 7+ parameters, pass an options object.
 - Deep nesting → early returns: `if (!a) return; if (!b) return;`.
 
-## Architecture — respect `.aislop/rules.yaml`
+## Architecture — respect `.aislop/rules.yml`
 
-If the project has `.aislop/rules.yaml` (custom architecture rules — import bans, layering, module boundaries), open it before writing. A rule you break now is a finding you'll have to undo later.
+If the project has `.aislop/rules.yml` (custom architecture rules — import bans, layering, module boundaries), open it before writing. A rule you break now is a finding you'll have to undo later.
 
 ## Dependencies — use what's there
 
-`code-quality/unused-dependency` — `code-quality/missing-dependency` — `security/vulnerable-dependency`
+`knip/dependencies` — `knip/unlisted` — `security/vulnerable-dependency`
 
 - Before adding a package, check `package.json` — the project often already has a library.
 - Never install a package for a 5-line utility.
