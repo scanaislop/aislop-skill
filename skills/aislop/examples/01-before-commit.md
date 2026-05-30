@@ -21,7 +21,7 @@ Parses the JSON. Three findings:
 
 - `ai-slop/narrative-comment` · `src/lib/format.ts:3` · fixable
 - `ai-slop/unused-import` · `src/lib/format.ts:1` · fixable
-- `ai-slop/as-any-cast` · `src/lib/format.ts:18` · not fixable
+- `ai-slop/unsafe-type-assertion` · `src/lib/format.ts:18` · not fixable
 
 Runs auto-fix for the mechanical two:
 
