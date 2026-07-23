@@ -20,6 +20,7 @@ Flags: `-s <skill>` to pick one skill, `-a <agent>` for a specific agent, `-g` f
 
 ## Links
 
+- Discord: [discord.gg/Mzz4A6mfj6](https://discord.gg/Mzz4A6mfj6)
 - aislop CLI: [github.com/scanaislop/aislop](https://github.com/scanaislop/aislop)
 - Docs: [scanaislop.com/docs/skill](https://scanaislop.com/docs/skill)
 - Contribute: [CONTRIBUTING.md](CONTRIBUTING.md)
