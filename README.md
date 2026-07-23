@@ -2,7 +2,7 @@
 
 Agent skills for the [aislop](https://github.com/scanaislop/aislop) code-quality CLI, installable across every agent in the [skills.sh](https://skills.sh) ecosystem.
 
-[![skills.sh](https://skills.sh/b/scanaislop/skills)](https://skills.sh/scanaislop/skills)
+[![skills.sh](https://skills.sh/b/scanaislop/skills)](https://skills.sh/scanaislop/skills) [![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/Mzz4A6mfj6)
 
 ## Install
 
@@ -20,6 +20,7 @@ Flags: `-s <skill>` to pick one skill, `-a <agent>` for a specific agent, `-g` f
 
 ## Links
 
+- Discord: [discord.gg/Mzz4A6mfj6](https://discord.gg/Mzz4A6mfj6)
 - aislop CLI: [github.com/scanaislop/aislop](https://github.com/scanaislop/aislop)
 - Docs: [scanaislop.com/docs/skill](https://scanaislop.com/docs/skill)
 - Contribute: [CONTRIBUTING.md](CONTRIBUTING.md)
