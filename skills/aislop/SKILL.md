@@ -1,6 +1,6 @@
 ---
 name: aislop
-description: Code-quality gate and coding guardrail for AI coding agents. Always invoke when you finish editing and prepare to hand control back, even if the user did not explicitly ask. Trigger on commit, push, PR, or quality questions like any slop, is this clean, review my changes, score my code, any duplicates, or is this safe. Scans with aislop, fixes what is mechanical, addresses the rest in-session in the project style, then reports what changed.
+description: Code-quality gate and coding guardrail for AI coding agents. Always invoke when you finish editing and prepare to hand control back, even if the user did not explicitly ask. Trigger on commit, push, PR, or phrases like any slop, remove slop, review my code, run aislop, or score my code. Scans with aislop, fixes what is mechanical, addresses the rest in-session in the project style, then reports what changed.
 ---
 
 # aislop — agent skill
@@ -61,7 +61,7 @@ Categories: Comments, Types, Errors, Security, Dedup, Dead code, Console, TODO, 
 
 ## When to invoke
 
-Invoke when you've finished editing and are handing control back, the user is preparing to **commit/push/open a PR**, or they ask any quality question: "any slop", "is this clean", "any duplicates", "is this reusable", "can we dedupe this", "is this too long", "is this safe", "audit my deps", "does this follow our rules", "score my code", "score dropped", "add a badge".
+Invoke when you've finished editing and are handing control back, the user is preparing to **commit/push/open a PR**, or they ask: "any slop", "remove slop", "review my code", "run aislop", "score my code", "any duplicates", "can we dedupe this", "is this too long", "audit my deps", "score dropped", "add a badge".
 
 Skip when: user is only reading, is mid-refactor and asked you to hold off, or explicitly disabled aislop.
 
@@ -118,7 +118,11 @@ The CLI has done its half. Remaining `fixable: false` findings are what this ski
 
 ### 4. For each remaining finding, do the judgement work
 
-**a. Verify it's real.** Open the file. Read the cited line and context. Is the rule description accurate? Could it be a false positive (regex matched inside a string/comment/identifier)? Is there a reason the code is intentional?
+**a. Verify it's real.** Open the file. Read the cited line and context. Is the rule description accurate? Is the code intentional? Before flagging a false positive, check:
+1. Is the match inside a string literal, template literal, or comment?
+2. Is it part of an identifier name that happens to contain the pattern?
+3. Is it in a test fixture, mock data, or example?
+4. Would a reader agree this isn't the pattern the rule describes?
 
 **b. Decide:**
 
@@ -177,16 +181,6 @@ Re-scanned: 95 / 100, 0 errors, 0 warnings.
 
 If clean but manual pass found issues, report those too. If something needs a product-level call, put it at the end with the specific choice.
 
-## How to verify a false positive
-
-Before flagging, check:
-1. Is the match inside a string literal, template literal, or comment?
-2. Is it part of an identifier name that happens to contain the pattern?
-3. Is it in a test fixture, mock data, or example?
-4. Would a reader agree this isn't the pattern the rule describes?
-
-Include a one-sentence reason. Never silence the rule on the user's behalf.
-
 ## Severity and score interpretation
 
 | Severity | Fixable | Action |
@@ -200,20 +194,14 @@ Score bands: **90–100** healthy; **75–89** healthy with debt; **60–74** de
 
 ## Default: invent, apply, report — don't ask
 
-Make the fix and report what you did. Missing type → invent it. Swallowed error → log and rethrow. Oversized function → extract at the seam. Duplicate logic → extract a helper. Generic name → rename. Don't ask "should I" for any of these — just do it and mention what changed in the reply.
+Make the fix and report what you did. Missing type → invent it. Swallowed error → log and rethrow. Oversized function → extract at the seam. Duplicate logic → extract a helper. Generic name → rename. Don't ask "should I" for any of these — pick the right tool, apply it, and mention what changed.
 
 Escalate **only** when the fix is a product decision, would change observable semantics you shouldn't override, is a false positive worth flagging, or is legitimately intentional code the user should decide on.
 
-Never ask permission for fixes you can make yourself. Pick the right tool and apply it.
-
 ## Anti-patterns
 
-- Do NOT treat this skill as a wrapper around `aislop fix`. Your job is the judgement layer.
-- Do NOT ask for permission on fixes you can make yourself.
 - Do NOT paste raw JSON into your reply — triage and summarise.
 - Do NOT silence rules in config or add blanket suppression comments.
 - Do NOT delete `.aislop/config.yml` or `.aislop/rules.yml`.
-- Do NOT claim completion without a post-fix re-scan.
-- Do NOT treat a 100 score as proof the code is good — do the manual pass.
 - Do NOT run `aislop fix -f` silently on unrelated turns — it rewrites manifests.
 - Do NOT fight the detector by editing regex patterns — your job is clean code.
